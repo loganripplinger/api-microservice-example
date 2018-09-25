@@ -23,13 +23,23 @@ app.get("/", function (req, res) {
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-
+app.get('/api/timestamp/', function (req, res) {
+  var date = new Date();
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  })
+});
 app.get('/api/timestamp/:date_string', function(req, res) {
   
   var date;
   
   try {
-    date = new Date(req.params.date_string);
+    if (Number.isInteger(Number.parseInt(req.params.date_string))) {
+      date = new Date(Number.parseInt(req.params.date_string));
+    } else {
+      date = new Date(req.params.date_string);
+    }
   } catch(err) {
     res.json({ unix: null, utc: "Invalid Date" })
   }
